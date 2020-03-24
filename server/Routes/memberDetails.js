@@ -4,10 +4,12 @@ const { auth} = require('../middleware/auth');
 
 const router = express.Router();
 
+//route to add details of new church member//
 router.post('/api/add_member', auth,(req,res)=>{
     try{
         const member = new Member(req.body)
 
+    //saving member details in database    
     member.save((err,doc)=>{
         if(err) return res.status(400).send(err);
         res.status(200).json({
@@ -20,6 +22,7 @@ router.post('/api/add_member', auth,(req,res)=>{
     }
 })
 
+//route to search for existing member by id//
 router.post('/api/search_member', auth,(req,res)=>{
     try{
         Member.findOne({'ID':req.body.ID},(err,member)=>{
@@ -31,6 +34,7 @@ router.post('/api/search_member', auth,(req,res)=>{
     }
 })
 
+//route to update or edit details of existing member//
 router.post('/api/update_member', auth,(req,res)=>{
     try{
         Member.findOneAndUpdate(req.body.ID,req.body,{new:true},(err,doc)=>{
@@ -46,6 +50,7 @@ router.post('/api/update_member', auth,(req,res)=>{
 
 })
 
+//route to delete all details of a member//
 router.delete('/api/delete_member', auth,(req,res)=>{
    try{
     Member.findOneAndRemove(req.body.ID,(err,doc)=>{

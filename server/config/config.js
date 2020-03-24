@@ -4,7 +4,9 @@ const config = {
         DATABASE: process.env.MONGODB_URI
     },
     default:{
+        //secret string used in generating token//
         SECRET: 'GRACEFAMILYPANTHERA',
+        //database URL to connect to//
         DATABASE: 'mongodb://localhost:27017/graceFamily'
     }
 }

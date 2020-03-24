@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const config = require('./../config/config').get(process.env.NODE_ENV);
 const SALT_I = 10;
 
+//schema of user details//
 const userSchema = mongoose.Schema({
     username:{
         type:String,
@@ -30,21 +31,25 @@ const userSchema = mongoose.Schema({
         maxlength:100
     },
     role:{
-        type:Number,
-        default:0
+        type:String,
+        default:"",
+        enum:['Admin', 'Data Entry',]
     },
     token:{
         type:String
     }
 })
 
+//method to generate hash for password before saving to database//
 userSchema.pre('save',function(next){
     var user = this;
 
     if(user.isModified('password')){
+        //generating sal to hash password//
         bcrypt.genSalt(SALT_I,function(err,salt){
             if(err) return next(err);
 
+            //generating hash for password//
             bcrypt.hash(user.password,salt,function(err,hash){
                 if(err) return next(err);
                 user.password = hash;
@@ -56,6 +61,7 @@ userSchema.pre('save',function(next){
     }
 })
 
+//creating method to compare existing password in database and password of user//
 userSchema.methods.comparePassword = function(candidatePassword,cb){
     bcrypt.compare(candidatePassword,this.password,function(err,isMatch){
         if(err) return cb(err);
@@ -63,6 +69,7 @@ userSchema.methods.comparePassword = function(candidatePassword,cb){
     })
 }
 
+//creating method to generate token to authenticate user//
 userSchema.methods.generateToken = function(cb){
     var user = this;
     var token = jwt.sign(user._id.toHexString(),config.SECRET);
@@ -85,7 +92,7 @@ userSchema.statics.findByToken = function(token,cb){
     })
 }
 
-
+//creating method to delete token when user is logging out//
 userSchema.methods.deleteToken = function(token,cb){
     var user = this;
 

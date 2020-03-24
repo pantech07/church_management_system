@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//schema of member details to be added to database//
 const MemberSchema = mongoose.Schema({
     ID:{type:String, required:true, unique:1,},
     Surname:{type:String, required:true},
