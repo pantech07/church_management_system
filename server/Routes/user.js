@@ -1,22 +1,28 @@
 const express = require('express');
 const { User } = require('../models/user');
+const {Message} = require('../models/message');
 const { auth} = require('../middleware/auth');
-const roles = require('user-groups-roles');
+const config = require('../config/config').get(process.env.NODE_ENV);
+
+
+const credentials ={
+    apiKey: 'UZOdGxj2iAYUV-2UqkZp7qveu4GsjzA69ePddPuS',
+    username: 'Pantech'
+}
+const AT = require('africastalking')(credentials);
+const sms = AT.SMS;
+
+//const roles = require('user-groups-roles');//
 
 const router = express.Router();
 
-//USER ROLES//
-roles.createNewRole('admin');
-roles.createNewRole('dataEntry');
-roles.createNewRole('recordManagemenet');
 
-//USER PRIVILEGES//
-roles.createNewPrivileges(['/api/add_member', "POST"], "This adds a new member", false)
 
-//route to render login page for testing//
+
+/*route to render login page for testing//
 router.get('/api/login', async (req, res)=>{
     res.sendFile(__dirname + "/html/login.html");
-});
+});*/
 
 /*router.get('/api/auth',auth, async (req,res)=>{
     res.json({
@@ -93,6 +99,29 @@ router.get('/api/logout',auth, async (req,res)=>{
     }catch(err){
         throw(err);
     }
+
+})
+
+router.post('/api/sendMessage',async (req, res)=>{
+    try{
+        const message = "This message is from Mawuli. I am testing the software's messaging route. Thanks";
+
+        const phoneNumbers = ['+233505527839','+233501096351','+233502729026'];
+        const options = {
+            to: phoneNumbers,
+            message: message
+        }
+
+        sms.send(options).then(
+                res.status(200).json({
+                    success: 'Message sent succcessfully'
+                })
+        )
+
+    }catch(err){
+        res.status(400).json({success: 'messsage not sent'})
+    }
+
 })
 
 module.exports = router;

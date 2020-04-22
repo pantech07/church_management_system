@@ -1,6 +1,10 @@
 const express = require('express');
 const { Member } = require('../models/member');
+const { Welfare } = require('../models/welfare');
+const { Tithe } = require('../models/tithes');
 const { auth} = require('../middleware/auth');
+
+
 
 const router = express.Router();
 
@@ -8,8 +12,18 @@ const router = express.Router();
 router.post('/api/add_member', auth,(req,res)=>{
     try{
         const member = new Member(req.body)
+        const welfare = new Welfare({
+            'ID': req.body.ID,
+            'name' : `${req.body.Surname} ${req.body.Othernames}`
+        })
+        const tithe = new Tithe({
+            'ID': req.body.ID,
+            'name' : `${req.body.Surname} ${req.body.Othernames}`
+        })
 
-    //saving member details in database    
+    //saving member details in database 
+    welfare.save();   
+    tithe.save();
     member.save((err,doc)=>{
         if(err) return res.status(400).send(err);
         res.status(200).json({
@@ -22,9 +36,10 @@ router.post('/api/add_member', auth,(req,res)=>{
     }
 })
 
-//route to search for existing member by id//
-router.post('/api/search_member', auth,(req,res)=>{
+//route to search for existing member by id  //
+router.post('/api/search_member', auth, (req,res)=>{
     try{
+        
         Member.findOne({'ID':req.body.ID},(err,member)=>{
             if(!member) return res.json({message:'Member not found'});
             res.send(member)

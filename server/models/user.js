@@ -31,9 +31,8 @@ const userSchema = mongoose.Schema({
         maxlength:100
     },
     role:{
-        type:String,
-        default:"",
-        enum:['Admin', 'Data Entry',]
+        type: Number,
+        default:0,
     },
     token:{
         type:String

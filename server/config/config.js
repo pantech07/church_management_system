@@ -6,6 +6,8 @@ const config = {
     default:{
         //secret string used in generating token//
         SECRET: 'GRACEFAMILYPANTHERA',
+        //apiKey and ApiSecret for sending messages
+        APIKEY: 'UZOdGxj2iAYUV-2UqkZp7qveu4GsjzA69ePddPuS',
         //database URL to connect to//
         DATABASE: 'mongodb://localhost:27017/graceFamily'
     }
